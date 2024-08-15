@@ -9,7 +9,7 @@
             margin: 0;
             padding: 0;
             text-align: center;
-            background-color: #FFB6C1; /* Light pink background */
+            background-color: #FFB6C1;
             color: #333;
             font-family: Arial, sans-serif;
             overflow-x: hidden;
@@ -48,33 +48,52 @@
             font-size: 14px;
             margin: 20px;
             text-align: center;
-            color: #000000; /* Black color for better visibility */
-            font-weight: 500; /* Slightly bolder text */
-            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8); /* White text shadow for better readability */
+            color: #000000;
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
         }
         #question {
             font-size: 20px;
             font-weight: bold;
-            color: #000000; /* Black color for better visibility */
+            color: #000000;
             margin-bottom: 15px;
-            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8); /* White text shadow for better readability */
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+        }
+        #hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            overflow: hidden;
         }
         .heart {
             color: red;
-            font-size: 24px;
+            font-size: 48px;
             position: absolute;
-            transition: all 10s linear;
+            z-index: 1001;
+            animation: moveHeart 15s linear infinite;
+        }
+        @keyframes moveHeart {
+            0% {
+                transform: translate(-100%, -100%);
+            }
+            100% {
+                transform: translate(100vw, 100vh);
+            }
         }
         #responseMessage {
             display: none;
             font-size: 20px;
             margin: 20px;
             padding: 10px;
-            color: #ffffff; /* White text color */
-            background-color: rgba(255, 20, 147, 0.8); /* Semi-transparent deep pink background */
+            color: #ffffff;
+            background-color: rgba(255, 20, 147, 0.8);
             border-radius: 5px;
             font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Dark text shadow for better readability */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
         button {
@@ -99,11 +118,10 @@
             padding: 5px;
             border-radius: 5px;
         }
-        @media (max-width: 768px) 
-        {
-        #content {
-            width: 90%;
-            margin: 10px auto;
+        @media (max-width: 768px) {
+            #content {
+                width: 90%;
+                margin: 10px auto;
             }
             #lovePoem, #question, #responseMessage {
                 font-size: 16px;
@@ -113,8 +131,6 @@
             }
         }
     </style>
-    
-    
 </head>
 <body>
     <div id="hearts-container"></div>
@@ -140,7 +156,6 @@
     <div id="currentTime"></div>
 
     <script>
-        // Your existing JavaScript code here
         const images = ['images/photo1.jpeg', 'images/photo2.jpeg', 'images/photo3.jpeg','images/photo4.jpeg'];
         let currentImageIndex = 0;
 
@@ -149,7 +164,6 @@
             document.body.style.setProperty('--bg-image', `url('${images[currentImageIndex]}')`);
             currentImageIndex = (currentImageIndex + 1) % images.length;
         }
-
 
         function showTime() {
             document.getElementById('currentTime').innerHTML = new Date().toUTCString();
@@ -199,63 +213,64 @@
 
         function createHearts() {
             const heartsContainer = document.getElementById('hearts-container');
-            for (let i = 0; i < 11; i++) {
+            for (let i = 0; i < 20; i++) {
                 const heart = document.createElement('div');
                 heart.className = 'heart';
                 heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = Math.random() * 100 + 'vh';
+                heart.style.animationDuration = (Math.random() * 5 + 10) + 's';
+                heart.style.animationDelay = (Math.random() * 5) + 's';
                 heartsContainer.appendChild(heart);
             }
         }
 
-        function moveHearts() {
-        const hearts = document.getElementsByClassName('heart');
-        const maxX = window.innerWidth;
-        const maxY = window.innerHeight;
+        function resetHeart(heart) {
+            heart.style.left = (-50 + Math.random() * 50) + 'px';
+            heart.style.top = (-50 + Math.random() * 100) + 'vh';
+            heart.style.animationDuration = (Math.random() * 5 + 10) + 's';
+        }
 
-        for (let heart of hearts) {
-            heart.style.left = Math.random() * maxX + 'px';
-            heart.style.top = Math.random() * maxY + 'px';
-        }
-    }
-    
-    function preloadImages(array) {
-        if (!preloadImages.list) {
-            preloadImages.list = [];
-        }
-        var list = preloadImages.list;
-        for (var i = 0; i < array.length; i++) {
-            var img = new Image();
-            img.onload = function() {
-                var index = list.indexOf(this);
-                if (index !== -1) {
-                    list.splice(index, 1);
+        function moveHearts() {
+            const hearts = document.getElementsByClassName('heart');
+            const maxX = window.innerWidth;
+            const maxY = window.innerHeight;
+
+            for (let heart of hearts) {
+                const rect = heart.getBoundingClientRect();
+                if (rect.left > maxX || rect.top > maxY) {
+                    resetHeart(heart);
                 }
             }
-            list.push(img);
-            img.src = array[i];
         }
-    }
 
-    function initializeHearts() {
-        createHearts();
-        moveHearts();
-    }
+        function preloadImages(array) {
+            if (!preloadImages.list) {
+                preloadImages.list = [];
+            }
+            var list = preloadImages.list;
+            for (var i = 0; i < array.length; i++) {
+                var img = new Image();
+                img.onload = function() {
+                    var index = list.indexOf(this);
+                    if (index !== -1) {
+                        list.splice(index, 1);
+                    }
+                }
+                list.push(img);
+                img.src = array[i];
+            }
+        }
 
-    window.onload = function() {
-        preloadImages(images);
-        changeBackground(); // Set initial background
-        setInterval(changeBackground, 5000); // Change every 5 seconds
-        showTime(); // Initialize the time display
-        initializeHearts(); // Create and position hearts immediately
-        setInterval(moveHearts, 10000); // Continue moving hearts every 10 seconds
-    };
-
-    // Start moving hearts immediately after DOM is loaded
-    document.addEventListener('DOMContentLoaded', function() {
-        initializeHearts();
-    });
-
-    setInterval(showTime, 1000); // Update time every second
+        window.onload = function() {
+            preloadImages(images);
+            changeBackground();
+            setInterval(changeBackground, 5000);
+            showTime();
+            createHearts();
+            setInterval(moveHearts, 1000);
+            setInterval(showTime, 1000);
+        };
     </script>
 </body>
 </html>
