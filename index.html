@@ -12,7 +12,23 @@
             background-color: #FFB6C1; /* Light pink background */
             color: #333;
             font-family: Arial, sans-serif;
-            overflow: hidden;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
         }
         #content {
             padding: 20px;
@@ -77,6 +93,19 @@
             padding: 5px;
             border-radius: 5px;
         }
+        @media (max-width: 768px) 
+        {
+        #content {
+            width: 90%;
+            margin: 10px auto;
+            }
+            #lovePoem, #question, #responseMessage {
+                font-size: 16px;
+            }
+            .heart {
+                font-size: 36px;
+            }
+        }
     </style>
     
     
@@ -111,9 +140,10 @@
 
         function changeBackground() {
             console.log('Changing background to:', images[currentImageIndex]);
-            document.body.style.backgroundImage = `url('${images[currentImageIndex]}')`;
+            document.body.style.setProperty('--bg-image', `url('${images[currentImageIndex]}')`);
             currentImageIndex = (currentImageIndex + 1) % images.length;
         }
+
 
         function showTime() {
             document.getElementById('currentTime').innerHTML = new Date().toUTCString();
