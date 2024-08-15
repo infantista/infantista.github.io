@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Anniversary</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            background-color: #FFB6C1; /* Light pink background */
+            color: #333;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        #content {
+            padding: 20px;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: rgba(255, 255, 255, 0.3); /* Very light, more transparent background */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #lovePoem {
+            font-size: 18px;
+            margin: 20px;
+            text-align: center;
+            color: #000000; /* Black color for better visibility */
+            font-weight: 500; /* Slightly bolder text */
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8); /* White text shadow for better readability */
+        }
+        #question {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000000; /* Black color for better visibility */
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8); /* White text shadow for better readability */
+        }
+        .heart {
+            color: red;
+            font-size: 48px;
+            position: absolute;
+            transition: all 10s linear;
+        }
+        #responseMessage {
+            display: none;
+            font-size: 20px;
+            margin: 20px;
+            padding: 10px;
+            color: #ffffff; /* White text color */
+            background-color: rgba(255, 20, 147, 0.8); /* Semi-transparent deep pink background */
+            border-radius: 5px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Dark text shadow for better readability */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        button {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #ff3333;
+        }
+        #currentTime {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+    
+    
+</head>
+<body>
+    <div id="hearts-container"></div>
+    <div id="content">
+        <div id="lovePoem">
+            11 years of love and laughter,<br>
+            A journey together, happily ever after.<br>
+            Through thick and thin, we've held on tight,<br>
+            Growing stronger with each passing night.<br><br>
+
+            Here's to us, to love that lasts,<br>
+            To cherished memories, and beautiful pasts.<br>
+            Felcy, my love, will you be mine,<br>
+            Forever and always, until the end of time?
+        </div>
+        <div id="question">
+            <p>Will you Always Be My Half?</p>
+            <button onclick="displayMessage('yes')" id="yesButton">Yes</button>
+            <button onclick="displayMessage('no')" id="noButton">No</button>
+        </div>
+        <div id="responseMessage"></div>
+    </div>
+    <div id="currentTime"></div>
+
+    <script>
+        // Your existing JavaScript code here
+        const images = ['images/photo1.jpeg', 'images/photo2.jpeg', 'images/photo3.jpeg','images/photo4.jpeg'];
+        let currentImageIndex = 0;
+
+        function changeBackground() {
+            console.log('Changing background to:', images[currentImageIndex]);
+            document.body.style.backgroundImage = `url('${images[currentImageIndex]}')`;
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+        }
+
+        function showTime() {
+            document.getElementById('currentTime').innerHTML = new Date().toUTCString();
+        }
+
+        let attempts = 0;
+        let loveQuotes = [
+            "You are the light that brightens my life.",
+            "In your arms, I've found my forever home.",
+            "Every moment with you is a beautiful dream.",
+            "You and I, a love story written in the stars."
+        ];
+
+        let yesSelected = false;
+
+        function displayMessage(response) {
+            const responseMessage = document.getElementById('responseMessage');
+            const yesButton = document.getElementById('yesButton');
+            const noButton = document.getElementById('noButton');
+            const questionElement = document.querySelector('#question p');
+
+            if (yesSelected) {
+                return;
+            }
+
+            if (response === 'yes') {
+                const randomIndex = Math.floor(Math.random() * loveQuotes.length);
+                responseMessage.innerHTML = loveQuotes[randomIndex];
+                noButton.disabled = true;
+                yesSelected = true;
+            } else {
+                if (attempts === 0) {
+                    responseMessage.innerHTML = "Try again, you pressed the wrong answer.";
+                } else if (attempts === 1) {
+                    responseMessage.innerHTML = "It seems you need glasses as you pressed the wrong one again. Let's try again.";
+                } else if (attempts === 2) {
+                    responseMessage.innerHTML = "One more time... You need help finding the right answer. Here's a hint: Starts with 'y' and ends with 'es'.";
+                } else if (attempts === 3) {
+                    responseMessage.innerHTML = "It seems you're struggling. The correct answer is 'Yes'.";
+                    questionElement.innerHTML = 'Looks like you need some help. Will you be my Valentine now?';
+                }
+                attempts++;
+            }
+
+            responseMessage.style.display = 'block';
+        }
+
+        function createHearts() {
+            const heartsContainer = document.getElementById('hearts-container');
+            for (let i = 0; i < 11; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤️';
+                heartsContainer.appendChild(heart);
+            }
+        }
+
+        function moveHearts() {
+        const hearts = document.getElementsByClassName('heart');
+        const maxX = window.innerWidth;
+        const maxY = window.innerHeight;
+
+        for (let heart of hearts) {
+            heart.style.left = Math.random() * maxX + 'px';
+            heart.style.top = Math.random() * maxY + 'px';
+        }
+    }
+
+    function initializeHearts() {
+        createHearts();
+        moveHearts();
+    }
+
+    window.onload = function() {
+        changeBackground(); // Set initial background
+        setInterval(changeBackground, 5000); // Change every 5 seconds
+        showTime(); // Initialize the time display
+        initializeHearts(); // Create and position hearts immediately
+        setInterval(moveHearts, 10000); // Continue moving hearts every 10 seconds
+    };
+
+    // Start moving hearts immediately after DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeHearts();
+    });
+
+    setInterval(showTime, 1000); // Update time every second
+    </script>
+</body>
+</html>
