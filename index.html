@@ -17,6 +17,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            position: relative;
         }
         body::before {
             content: "";
@@ -26,22 +27,25 @@
             width: 100%;
             height: 100%;
             background-image: var(--bg-image);
-            background-size: cover;
+            background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
             z-index: -1;
-            opacity: 0.8; /* Adjust this value to make the background more or less transparent */
+            opacity: 0.8;
         }
         #content {
-            padding: 20px;
+            padding: 10px;
             max-width: 600px;
-            margin: 20px auto;
-            background-color: rgba(255, 255, 255, 0.3); /* Very light, more transparent background */
+            width: 90%;
+            margin: 10px auto;
+            background-color: rgba(255, 255, 255, 0.7);
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
         }
         #lovePoem {
-            font-size: 18px;
+            font-size: 14px;
             margin: 20px;
             text-align: center;
             color: #000000; /* Black color for better visibility */
@@ -57,7 +61,7 @@
         }
         .heart {
             color: red;
-            font-size: 48px;
+            font-size: 24px;
             position: absolute;
             transition: all 10s linear;
         }
@@ -213,6 +217,24 @@
             heart.style.top = Math.random() * maxY + 'px';
         }
     }
+    
+    function preloadImages(array) {
+        if (!preloadImages.list) {
+            preloadImages.list = [];
+        }
+        var list = preloadImages.list;
+        for (var i = 0; i < array.length; i++) {
+            var img = new Image();
+            img.onload = function() {
+                var index = list.indexOf(this);
+                if (index !== -1) {
+                    list.splice(index, 1);
+                }
+            }
+            list.push(img);
+            img.src = array[i];
+        }
+    }
 
     function initializeHearts() {
         createHearts();
@@ -220,6 +242,7 @@
     }
 
     window.onload = function() {
+        preloadImages(images);
         changeBackground(); // Set initial background
         setInterval(changeBackground, 5000); // Change every 5 seconds
         showTime(); // Initialize the time display
